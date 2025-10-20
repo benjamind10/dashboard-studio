@@ -93,7 +93,7 @@ export function LoggingControl() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 w-96 bg-white border border-gray-300 rounded-lg shadow-xl z-50 max-h-96 flex flex-col">
+    <div className="fixed bottom-4 right-4 w-[420px] bg-white border border-gray-300 rounded-lg shadow-xl z-50 max-h-[600px] flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <h3 className="text-lg font-medium text-gray-900">Logging Control</h3>
@@ -106,7 +106,7 @@ export function LoggingControl() {
       </div>
 
       {/* Controls */}
-      <div className="p-4 border-b border-gray-200 space-y-4">
+      <div className="p-6 border-b border-gray-200 space-y-5 overflow-hidden flex-shrink-0">
         {/* Quick Actions */}
         <div className="flex space-x-2">
           <button
@@ -176,44 +176,48 @@ export function LoggingControl() {
         </div>
 
         {/* Category Settings */}
-        <div className="space-y-2">
+        <div className="space-y-2 overflow-hidden">
           <h4 className="text-sm font-medium text-gray-700">Categories:</h4>
-          {Object.entries(config.categories).map(
-            ([category, categoryConfig]) => (
-              <div
-                key={category}
-                className="flex items-center justify-between text-xs"
-              >
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={categoryConfig.enabled}
-                    onChange={(e) =>
-                      handleCategoryToggle(category, e.target.checked)
-                    }
-                    className="rounded"
-                  />
-                  <span className="capitalize">{category}</span>
-                </div>
-                <select
-                  value={categoryConfig.level || config.level}
-                  onChange={(e) =>
-                    handleCategoryLevelChange(
-                      category,
-                      e.target.value as LogLevel
-                    )
-                  }
-                  className="border border-gray-300 rounded px-1 py-0.5"
-                  disabled={!categoryConfig.enabled}
+          <div className="space-y-1">
+            {Object.entries(config.categories).map(
+              ([category, categoryConfig]) => (
+                <div
+                  key={category}
+                  className="flex items-center justify-between text-xs gap-3 min-h-[24px]"
                 >
-                  <option value="debug">Debug</option>
-                  <option value="info">Info</option>
-                  <option value="warn">Warn</option>
-                  <option value="error">Error</option>
-                </select>
-              </div>
-            )
-          )}
+                  <div className="flex items-center space-x-2 flex-1 min-w-0">
+                    <input
+                      type="checkbox"
+                      checked={categoryConfig.enabled}
+                      onChange={(e) =>
+                        handleCategoryToggle(category, e.target.checked)
+                      }
+                      className="rounded flex-shrink-0 w-3 h-3"
+                    />
+                    <span className="capitalize truncate text-sm">
+                      {category}
+                    </span>
+                  </div>
+                  <select
+                    value={categoryConfig.level || config.level}
+                    onChange={(e) =>
+                      handleCategoryLevelChange(
+                        category,
+                        e.target.value as LogLevel
+                      )
+                    }
+                    className="border border-gray-300 rounded px-2 py-1 text-xs flex-shrink-0 min-w-[80px]"
+                    disabled={!categoryConfig.enabled}
+                  >
+                    <option value="debug">Debug</option>
+                    <option value="info">Info</option>
+                    <option value="warn">Warn</option>
+                    <option value="error">Error</option>
+                  </select>
+                </div>
+              )
+            )}
+          </div>
         </div>
       </div>
 
@@ -244,7 +248,7 @@ export function LoggingControl() {
           </select>
         </div>
 
-        <div className="flex-1 overflow-auto p-2 text-xs space-y-1 font-mono">
+        <div className="flex-1 overflow-auto p-2 text-xs space-y-1 font-mono min-h-[200px]">
           {filteredLogs.length === 0 ? (
             <div className="text-gray-500 text-center py-4">
               No logs to display
