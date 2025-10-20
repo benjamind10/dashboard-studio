@@ -1,0 +1,296 @@
+'use client';
+import { useState, useEffect } from 'react';
+import { logger, type LogLevel, type LogEntry } from '@/lib/logger';
+
+export function LoggingControl() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [config, setConfig] = useState(logger.getConfig());
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedLevel, setSelectedLevel] = useState<LogLevel>('debug');
+
+  useEffect(() => {
+    const unsubscribe = logger.onLog(() => {
+      setLogs(logger.getLogs({ limit: 100 }));
+    });
+
+    // Initial load
+    setLogs(logger.getLogs({ limit: 100 }));
+
+    return unsubscribe;
+  }, []);
+
+  const updateConfig = () => {
+    setConfig(logger.getConfig());
+  };
+
+  const handleGlobalLevelChange = (level: LogLevel) => {
+    logger.setLogLevel(level);
+    updateConfig();
+  };
+
+  const handleConsoleToggle = (enabled: boolean) => {
+    logger.enableConsole(enabled);
+    updateConfig();
+  };
+
+  const handleStorageToggle = (enabled: boolean) => {
+    logger.enableStorage(enabled);
+    updateConfig();
+  };
+
+  const handleCategoryToggle = (category: string, enabled: boolean) => {
+    const categoryConfig = config.categories[category] || { enabled: false };
+    logger.setCategoryConfig(category, { ...categoryConfig, enabled });
+    updateConfig();
+  };
+
+  const handleCategoryLevelChange = (category: string, level: LogLevel) => {
+    const categoryConfig = config.categories[category] || { enabled: true };
+    logger.setCategoryConfig(category, { ...categoryConfig, level });
+    updateConfig();
+  };
+
+  const clearLogs = () => {
+    logger.clearLogs();
+    setLogs([]);
+  };
+
+  const enableDebugMode = () => {
+    logger.enableDebugMode(true);
+    updateConfig();
+  };
+
+  const enableProductionMode = () => {
+    logger.enableProductionMode();
+    updateConfig();
+  };
+
+  const filteredLogs = logs.filter((log) => {
+    if (selectedCategory !== 'all' && log.category !== selectedCategory) {
+      return false;
+    }
+    const levelPriority = {
+      debug: 0,
+      info: 1,
+      warn: 2,
+      error: 3,
+      off: 4,
+    };
+    return levelPriority[log.level] >= levelPriority[selectedLevel];
+  });
+
+  if (!isOpen) {
+    return (
+      <button
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-4 right-4 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition-colors z-50"
+        title="Open Logging Control"
+      >
+        📋
+      </button>
+    );
+  }
+
+  return (
+    <div className="fixed bottom-4 right-4 w-96 bg-white border border-gray-300 rounded-lg shadow-xl z-50 max-h-96 flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <h3 className="text-lg font-medium text-gray-900">Logging Control</h3>
+        <button
+          onClick={() => setIsOpen(false)}
+          className="text-gray-400 hover:text-gray-600"
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* Controls */}
+      <div className="p-4 border-b border-gray-200 space-y-4">
+        {/* Quick Actions */}
+        <div className="flex space-x-2">
+          <button
+            onClick={enableDebugMode}
+            className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+          >
+            Debug Mode
+          </button>
+          <button
+            onClick={enableProductionMode}
+            className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+          >
+            Production Mode
+          </button>
+          <button
+            onClick={clearLogs}
+            className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+          >
+            Clear Logs
+          </button>
+        </div>
+
+        {/* Global Settings */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-700">
+              Global Level:
+            </label>
+            <select
+              value={config.level}
+              onChange={(e) =>
+                handleGlobalLevelChange(e.target.value as LogLevel)
+              }
+              className="text-xs border border-gray-300 rounded px-2 py-1"
+            >
+              <option value="debug">Debug</option>
+              <option value="info">Info</option>
+              <option value="warn">Warn</option>
+              <option value="error">Error</option>
+              <option value="off">Off</option>
+            </select>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-700">
+              Console Output:
+            </label>
+            <input
+              type="checkbox"
+              checked={config.enableConsole}
+              onChange={(e) => handleConsoleToggle(e.target.checked)}
+              className="rounded"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-700">
+              Store Logs:
+            </label>
+            <input
+              type="checkbox"
+              checked={config.enableStorage}
+              onChange={(e) => handleStorageToggle(e.target.checked)}
+              className="rounded"
+            />
+          </div>
+        </div>
+
+        {/* Category Settings */}
+        <div className="space-y-2">
+          <h4 className="text-sm font-medium text-gray-700">Categories:</h4>
+          {Object.entries(config.categories).map(
+            ([category, categoryConfig]) => (
+              <div
+                key={category}
+                className="flex items-center justify-between text-xs"
+              >
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={categoryConfig.enabled}
+                    onChange={(e) =>
+                      handleCategoryToggle(category, e.target.checked)
+                    }
+                    className="rounded"
+                  />
+                  <span className="capitalize">{category}</span>
+                </div>
+                <select
+                  value={categoryConfig.level || config.level}
+                  onChange={(e) =>
+                    handleCategoryLevelChange(
+                      category,
+                      e.target.value as LogLevel
+                    )
+                  }
+                  className="border border-gray-300 rounded px-1 py-0.5"
+                  disabled={!categoryConfig.enabled}
+                >
+                  <option value="debug">Debug</option>
+                  <option value="info">Info</option>
+                  <option value="warn">Warn</option>
+                  <option value="error">Error</option>
+                </select>
+              </div>
+            )
+          )}
+        </div>
+      </div>
+
+      {/* Log Viewer */}
+      <div className="flex-1 overflow-hidden flex flex-col">
+        <div className="p-2 border-b border-gray-200 flex items-center space-x-2">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="text-xs border border-gray-300 rounded px-2 py-1 flex-1"
+          >
+            <option value="all">All Categories</option>
+            {Object.keys(config.categories).map((category) => (
+              <option key={category} value={category} className="capitalize">
+                {category}
+              </option>
+            ))}
+          </select>
+          <select
+            value={selectedLevel}
+            onChange={(e) => setSelectedLevel(e.target.value as LogLevel)}
+            className="text-xs border border-gray-300 rounded px-2 py-1"
+          >
+            <option value="debug">Debug+</option>
+            <option value="info">Info+</option>
+            <option value="warn">Warn+</option>
+            <option value="error">Error</option>
+          </select>
+        </div>
+
+        <div className="flex-1 overflow-auto p-2 text-xs space-y-1 font-mono">
+          {filteredLogs.length === 0 ? (
+            <div className="text-gray-500 text-center py-4">
+              No logs to display
+            </div>
+          ) : (
+            filteredLogs.slice(-20).map((log, index) => {
+              const dataStr = log.data
+                ? (() => {
+                    try {
+                      return JSON.stringify(log.data);
+                    } catch {
+                      return String(log.data);
+                    }
+                  })()
+                : '';
+
+              return (
+                <div
+                  key={index}
+                  className={`p-1 rounded text-xs ${
+                    log.level === 'error'
+                      ? 'bg-red-50 text-red-800'
+                      : log.level === 'warn'
+                      ? 'bg-yellow-50 text-yellow-800'
+                      : log.level === 'info'
+                      ? 'bg-blue-50 text-blue-800'
+                      : 'bg-gray-50 text-gray-800'
+                  }`}
+                >
+                  <div className="font-medium">
+                    [{new Date(log.timestamp).toLocaleTimeString()}] [
+                    {log.category.toUpperCase()}] [{log.level.toUpperCase()}]
+                  </div>
+                  <div>{log.message}</div>
+                  {log.data !== undefined && log.data !== null && (
+                    <div className="text-gray-600 mt-1 text-xs">
+                      Data: {dataStr.substring(0, 100)}
+                      {dataStr.length > 100 && '...'}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

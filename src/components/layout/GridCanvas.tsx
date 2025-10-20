@@ -18,25 +18,38 @@ export function GridCanvas({
 
         const Widget = widgetDef.component;
 
-        // Merge default props with component-specific props
-        // Ensure binding is always present by prioritizing component binding over defaults
-        const binding = comp.binding || widgetDef.defaultProps?.binding;
-
-        // Only render if we have a binding
-        if (!binding) {
+        // Since we're managing configuration in the frontend,
+        // components should come with all required props
+        if (!comp.binding) {
           console.warn(
-            `No binding available for widget ${comp.id} of type ${comp.type}`
+            `No binding provided for widget ${comp.id} of type ${comp.type}`
           );
           return null;
         }
 
+        // Create properly typed props object
         const props = {
-          ...widgetDef.defaultProps,
           ...comp,
-          binding,
+          binding: comp.binding, // We know this exists from the check above
         };
 
-        return <Widget key={comp.id} {...props} />;
+        return (
+          <div
+            key={comp.id}
+            className="border border-gray-200 rounded-lg bg-white shadow-sm"
+          >
+            {comp.title && (
+              <div className="px-4 py-2 border-b border-gray-100 bg-gray-50 rounded-t-lg">
+                <h3 className="text-sm font-medium text-gray-700">
+                  {comp.title}
+                </h3>
+              </div>
+            )}
+            <div className="p-4">
+              <Widget {...props} />
+            </div>
+          </div>
+        );
       })}
     </div>
   );

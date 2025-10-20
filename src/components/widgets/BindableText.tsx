@@ -9,6 +9,7 @@ export interface BindableTextProps {
 
 export function BindableText({ binding, style }: BindableTextProps) {
   const value = useBinding(binding);
+
   return (
     <div
       className="rounded bg-white shadow p-4 text-center border border-gray-200"
