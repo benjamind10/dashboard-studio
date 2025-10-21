@@ -45,10 +45,10 @@ export function BindableText({ binding, style, id }: BindableTextProps) {
 
   return (
     <div
-      className="rounded bg-white shadow p-4 text-center border border-gray-200"
+      className="rounded bg-white dark:bg-gray-800 shadow p-4 text-center border border-gray-200 dark:border-gray-700"
       style={style}
     >
-      <span className="text-xl font-semibold">{String(value ?? '—')}</span>
+      <span className="text-xl font-semibold text-gray-900 dark:text-white">{String(value ?? '—')}</span>
     </div>
   );
 }

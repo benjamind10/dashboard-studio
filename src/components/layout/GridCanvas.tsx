@@ -36,11 +36,11 @@ export function GridCanvas({
         return (
           <div
             key={comp.id}
-            className="border border-gray-200 rounded-lg bg-white shadow-sm"
+            className="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 shadow-sm"
           >
             {comp.title && (
-              <div className="px-4 py-2 border-b border-gray-100 bg-gray-50 rounded-t-lg">
-                <h3 className="text-sm font-medium text-gray-700">
+              <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 rounded-t-lg">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {comp.title}
                 </h3>
               </div>

@@ -117,22 +117,22 @@ export default function SampleDashboardPage() {
     },
   ]);
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-900 p-4">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           Sample Dashboard
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400 text-sm">
           Testing MQTT connectivity and data transforms with live data from{' '}
-          <code className="bg-gray-200 px-2 py-1 rounded text-sm">
+          <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm text-gray-800 dark:text-gray-200">
             Acme/Site/Area/Line 24/Edge/*
           </code>
         </p>
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="text-sm font-semibold text-blue-800 mb-2">
+        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <h3 className="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2">
             🔧 Testing Features:
           </h3>
-          <ul className="text-sm text-blue-700 space-y-1">
+          <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
             <li>• Raw value extraction from MQTT JSON messages</li>
             <li>• Number formatting and type conversion</li>
             <li>• Custom script transforms</li>
