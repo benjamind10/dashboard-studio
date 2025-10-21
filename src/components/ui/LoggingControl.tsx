@@ -84,7 +84,7 @@ export function LoggingControl() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition-colors z-50"
+        className="fixed bottom-4 right-4 bg-gray-800 dark:bg-gray-700 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors z-50"
         title="Open Logging Control"
       >
         📋
@@ -93,37 +93,39 @@ export function LoggingControl() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 w-[420px] bg-white border border-gray-300 rounded-lg shadow-xl z-50 max-h-[600px] flex flex-col">
+    <div className="fixed bottom-4 right-4 w-[420px] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-xl z-50 max-h-[600px] flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
-        <h3 className="text-lg font-medium text-gray-900">Logging Control</h3>
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+          Logging Control
+        </h3>
         <button
           onClick={() => setIsOpen(false)}
-          className="text-gray-400 hover:text-gray-600"
+          className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
         >
           ✕
         </button>
       </div>
 
       {/* Controls */}
-      <div className="p-6 border-b border-gray-200 space-y-5 overflow-hidden flex-shrink-0">
+      <div className="p-6 border-b border-gray-200 dark:border-gray-700 space-y-5 overflow-hidden flex-shrink-0">
         {/* Quick Actions */}
         <div className="flex space-x-2">
           <button
             onClick={enableDebugMode}
-            className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+            className="px-3 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-800"
           >
             Debug Mode
           </button>
           <button
             onClick={enableProductionMode}
-            className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+            className="px-3 py-1 text-xs bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded hover:bg-red-200 dark:hover:bg-red-800"
           >
             Production Mode
           </button>
           <button
             onClick={clearLogs}
-            className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+            className="px-3 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
           >
             Clear Logs
           </button>
@@ -132,7 +134,7 @@ export function LoggingControl() {
         {/* Global Settings */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Global Level:
             </label>
             <select
@@ -140,7 +142,7 @@ export function LoggingControl() {
               onChange={(e) =>
                 handleGlobalLevelChange(e.target.value as LogLevel)
               }
-              className="text-xs border border-gray-300 rounded px-2 py-1"
+              className="text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1"
             >
               <option value="debug">Debug</option>
               <option value="info">Info</option>
@@ -151,7 +153,7 @@ export function LoggingControl() {
           </div>
 
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Console Output:
             </label>
             <input
@@ -163,7 +165,7 @@ export function LoggingControl() {
           </div>
 
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Store Logs:
             </label>
             <input
@@ -177,7 +179,9 @@ export function LoggingControl() {
 
         {/* Category Settings */}
         <div className="space-y-2 overflow-hidden">
-          <h4 className="text-sm font-medium text-gray-700">Categories:</h4>
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Categories:
+          </h4>
           <div className="space-y-1">
             {Object.entries(config.categories).map(
               ([category, categoryConfig]) => (
@@ -194,7 +198,7 @@ export function LoggingControl() {
                       }
                       className="rounded flex-shrink-0 w-3 h-3"
                     />
-                    <span className="capitalize truncate text-sm">
+                    <span className="capitalize truncate text-sm text-gray-900 dark:text-white">
                       {category}
                     </span>
                   </div>
@@ -206,7 +210,7 @@ export function LoggingControl() {
                         e.target.value as LogLevel
                       )
                     }
-                    className="border border-gray-300 rounded px-2 py-1 text-xs flex-shrink-0 min-w-[80px]"
+                    className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-xs flex-shrink-0 min-w-[80px]"
                     disabled={!categoryConfig.enabled}
                   >
                     <option value="debug">Debug</option>
@@ -223,11 +227,11 @@ export function LoggingControl() {
 
       {/* Log Viewer */}
       <div className="flex-1 overflow-hidden flex flex-col">
-        <div className="p-2 border-b border-gray-200 flex items-center space-x-2">
+        <div className="p-2 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-2">
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="text-xs border border-gray-300 rounded px-2 py-1 flex-1"
+            className="text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 flex-1"
           >
             <option value="all">All Categories</option>
             {Object.keys(config.categories).map((category) => (
@@ -239,7 +243,7 @@ export function LoggingControl() {
           <select
             value={selectedLevel}
             onChange={(e) => setSelectedLevel(e.target.value as LogLevel)}
-            className="text-xs border border-gray-300 rounded px-2 py-1"
+            className="text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1"
           >
             <option value="debug">Debug+</option>
             <option value="info">Info+</option>
@@ -250,7 +254,7 @@ export function LoggingControl() {
 
         <div className="flex-1 overflow-auto p-2 text-xs space-y-1 font-mono min-h-[200px]">
           {filteredLogs.length === 0 ? (
-            <div className="text-gray-500 text-center py-4">
+            <div className="text-gray-500 dark:text-gray-400 text-center py-4">
               No logs to display
             </div>
           ) : (
@@ -270,12 +274,12 @@ export function LoggingControl() {
                   key={index}
                   className={`p-1 rounded text-xs ${
                     log.level === 'error'
-                      ? 'bg-red-50 text-red-800'
+                      ? 'bg-red-50 dark:bg-red-900/50 text-red-800 dark:text-red-300'
                       : log.level === 'warn'
-                      ? 'bg-yellow-50 text-yellow-800'
+                      ? 'bg-yellow-50 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300'
                       : log.level === 'info'
-                      ? 'bg-blue-50 text-blue-800'
-                      : 'bg-gray-50 text-gray-800'
+                      ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300'
+                      : 'bg-gray-50 dark:bg-gray-700/50 text-gray-800 dark:text-gray-300'
                   }`}
                 >
                   <div className="font-medium">
@@ -284,7 +288,7 @@ export function LoggingControl() {
                   </div>
                   <div>{log.message}</div>
                   {log.data !== undefined && log.data !== null && (
-                    <div className="text-gray-600 mt-1 text-xs">
+                    <div className="text-gray-600 dark:text-gray-400 mt-1 text-xs">
                       Data: {dataStr.substring(0, 100)}
                       {dataStr.length > 100 && '...'}
                     </div>
