@@ -180,7 +180,6 @@ export default function UserConfigPage() {
                 </div>
               </div>
             </div>
-
           </div>
 
           {/* Actions */}
