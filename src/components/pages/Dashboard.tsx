@@ -7,13 +7,22 @@ import type { DashboardComponent } from '@/lib/types';
 export default function Dashboard() {
   const [components, setComponents] = useState<DashboardComponent[]>([]);
   const [showWidgetBuilder, setShowWidgetBuilder] = useState(false);
+  const [moveMode, setMoveMode] = useState(false);
 
   const addWidget = (widget: DashboardComponent) => {
     setComponents([...components, widget]);
   };
 
+  const updateComponents = (newComponents: DashboardComponent[]) => {
+    setComponents(newComponents);
+  };
+
   const openWidgetBuilder = () => {
     setShowWidgetBuilder(true);
+  };
+
+  const toggleMoveMode = () => {
+    setMoveMode(!moveMode);
   };
 
   return (
@@ -31,6 +40,16 @@ export default function Dashboard() {
                 className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
               >
                 + Widget
+              </button>
+              <button
+                onClick={toggleMoveMode}
+                className={`px-3 py-1.5 text-sm rounded transition-colors ${
+                  moveMode
+                    ? 'bg-orange-600 text-white hover:bg-orange-700'
+                    : 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                {moveMode ? '✋ Exit Move' : '↔️ Move'}
               </button>
               <button className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                 ⚙️
@@ -59,7 +78,11 @@ export default function Dashboard() {
             </div>
           </div>
         ) : (
-          <GridCanvas components={components} />
+          <GridCanvas
+            components={components}
+            onComponentUpdate={moveMode ? updateComponents : undefined}
+            showGrid={moveMode}
+          />
         )}
       </div>
 

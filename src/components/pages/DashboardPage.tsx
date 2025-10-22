@@ -5,7 +5,7 @@ import type { DashboardComponent } from '@/lib/types';
 import { TransformBuilder } from '@/lib/transformEngine';
 
 export default function SampleDashboardPage() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [moveMode, setMoveMode] = useState(false);
   const [components, setComponents] = useState<DashboardComponent[]>([
     // Infeed data - extract raw value
     {
@@ -116,12 +116,33 @@ export default function SampleDashboardPage() {
       position: { x: 2, y: 1 },
     },
   ]);
+
+  const updateComponents = (newComponents: DashboardComponent[]) => {
+    setComponents(newComponents);
+  };
+
+  const toggleMoveMode = () => {
+    setMoveMode(!moveMode);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900 p-4">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          Sample Dashboard
-        </h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Sample Dashboard
+          </h1>
+          <button
+            onClick={toggleMoveMode}
+            className={`px-3 py-1.5 text-sm rounded transition-colors ${
+              moveMode
+                ? 'bg-orange-600 text-white hover:bg-orange-700'
+                : 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+            }`}
+          >
+            {moveMode ? '✋ Exit Move' : '↔️ Move'}
+          </button>
+        </div>
         <p className="text-gray-600 dark:text-gray-400 text-sm">
           Testing MQTT connectivity and data transforms with live data from{' '}
           <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm text-gray-800 dark:text-gray-200">
@@ -141,7 +162,11 @@ export default function SampleDashboardPage() {
           </ul>
         </div>
       </div>
-      <GridCanvas components={components} />
+      <GridCanvas
+        components={components}
+        onComponentUpdate={moveMode ? updateComponents : undefined}
+        showGrid={moveMode}
+      />
     </div>
   );
 }
